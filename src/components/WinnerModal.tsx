@@ -1,44 +1,68 @@
-import * as Dialog from "@radix-ui/react-dialog";
+import * as AlertDialog from "@radix-ui/react-alert-dialog";
 import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 
-export default function WinnerModal({ winner }: { winner: "X" | "O" }) {
+export default function WinnerModal({
+  result,
+  clearBoard,
+}: {
+  result: "X" | "O" | "tie";
+  clearBoard: () => void;
+}) {
   const [open, setOpen] = useState<boolean>(false);
   useEffect(() => {
     setOpen(true);
-  }, [winner]);
+  }, [result]);
+
+  const navigate = useNavigate();
+
   return (
-    <Dialog.Root open={open} onOpenChange={setOpen}>
-      <Dialog.Trigger />
-      <Dialog.Portal>
-        <Dialog.Overlay className="fixed inset-0" />
-        <Dialog.Content className="tracking-wider fixed top-1/2 left-1/2 bg-slate-700 -translate-x-1/2 w-screen md:w-1/2 md:rounded-lg -translate-y-1/2 p-4  flex flex-col gap-3 text-center py-6">
-          <Dialog.Title className="text-slate-300/90">YOU WON!</Dialog.Title>
-          <Dialog.Description className="text-cyan-500  flex justify-center items-center gap-3">
-            <span className="text-5xl font-extrabold">
-              {winner.toUpperCase()}
-            </span>{" "}
-            <span className="text-2xl font-bold">TAKES THE ROUND!</span>
-          </Dialog.Description>
+    <AlertDialog.Root open={open} onOpenChange={setOpen}>
+      <AlertDialog.Portal>
+        <AlertDialog.Overlay className="fixed inset-0" />
+        <AlertDialog.Content
+          onEscapeKeyDown={(e) => e.preventDefault()}
+          className="tracking-wider opacity-95  fixed top-1/2 left-1/2 bg-slate-700 -translate-x-1/2  -translate-y-16 w-screen md:w-1/2 md:rounded-lg p-4  flex flex-col gap-3 text-center py-6"
+        >
+          <AlertDialog.Title className="text-slate-300/90">
+            ROUND ENDED
+          </AlertDialog.Title>
+          <AlertDialog.Description className="text-cyan-500  flex justify-center items-center gap-3">
+            {result !== "tie" ? (
+              <span className="text-5xl font-extrabold">
+                {result.toUpperCase()}
+              </span>
+            ) : null}{" "}
+            <span className="text-2xl font-bold">
+              {result === "tie" ? "THE ROUND WAS A TIE" : "TAKES THE ROUND!"}
+            </span>
+          </AlertDialog.Description>
           <div className="flex justify-center gap-2 font-bold">
-            <Dialog.Close asChild>
+            <AlertDialog.Action asChild>
               <button
                 aria-label="Quit"
-                className="p-2 rounded bg-slate-400/90 font-semibold shadow-down  shadow-slate-500"
+                className="py-2 px-4 rounded bg-slate-400/90 font-semibold shadow-down  shadow-slate-500"
+                value="quit"
+                onClick={() => {
+                  clearBoard();
+                  navigate("/");
+                }}
               >
                 QUIT
               </button>
-            </Dialog.Close>
-            <Dialog.Close asChild>
+            </AlertDialog.Action>
+            <AlertDialog.Cancel asChild>
               <button
                 aria-label="Quit"
-                className="p-2 rounded bg-yellow-500/90 tracking-wide font-semibold shadow-down  shadow-yellow-600"
+                className="py-2 px-4 rounded bg-yellow-500/90 tracking-wide font-semibold shadow-down  shadow-yellow-600"
+                onClick={clearBoard}
               >
                 NEXT ROUND
               </button>
-            </Dialog.Close>
+            </AlertDialog.Cancel>
           </div>
-        </Dialog.Content>
-      </Dialog.Portal>
-    </Dialog.Root>
+        </AlertDialog.Content>
+      </AlertDialog.Portal>
+    </AlertDialog.Root>
   );
 }
