@@ -14,7 +14,7 @@ export default function Button({
   return (
     <button
       {...rest}
-      className={`p-2 rounded  tracking-wide font-semibold shadow-down hover:opacity-90 ${variantClasses} ${className}`}
+      className={`grid place-content-center p-2 rounded tracking-wide font-semibold shadow-down hover:opacity-90 ${variantClasses} ${className}`}
     ></button>
   );
 }
