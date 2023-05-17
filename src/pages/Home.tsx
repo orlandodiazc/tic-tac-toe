@@ -1,4 +1,4 @@
-import Button from "../components/Button";
+import { Link } from "react-router-dom";
 import Logo from "../components/Logo";
 import * as ToggleGroup from "@radix-ui/react-toggle-group";
 
@@ -37,8 +37,18 @@ export default function Home() {
             <p className="text-xs text-slate-300/60">REMEMBER: X GOES FIRST</p>
           </div>
           <div className="flex flex-col gap-4">
-            <Button variant="yellow">NEW GAME (VS CPU)</Button>
-            <Button variant="blue">NEW GAME (VS PLAYER)</Button>
+            <Link
+              to="/play"
+              className="text-center p-2 rounded tracking-wide font-semibold shadow-down hover:opacity-90 bg-yellow-500/90 shadow-yellow-600 "
+            >
+              NEW GAME (VS CPU)
+            </Link>
+            <Link
+              to="/play"
+              className="text-center p-2 rounded tracking-wide font-semibold shadow-down hover:opacity-90 bg-blue-500/90 shadow-blue-600 "
+            >
+              NEW GAME (VS PLAYER)
+            </Link>
           </div>
         </section>
       </div>
