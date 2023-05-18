@@ -1,8 +1,9 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import WinnerModal from "../components/WinnerModal";
 import Logo from "../components/Logo";
 import Button from "../components/Button";
 import { MdRefresh } from "react-icons/md";
+import minimax from "../utils/tic-tac-toe";
 
 const GRID = Array.from(Array(9).keys());
 const WINNER_COMB = [
@@ -29,11 +30,22 @@ export default function Board() {
   const [result, setResult] = useState<Result>();
   const [stats, setStats] = useState<Stats>({ ties: 0, xWin: 0, oWin: 0 });
 
+  useEffect(() => {
+    const boardDraft = new Map(board).set(0, player);
+    setBoard(boardDraft);
+
+    const updatedPlayer = player === "X" ? "O" : "X";
+    setPlayer(updatedPlayer);
+  }, []);
+
   function handleClick(cell: number) {
     if (board.has(cell)) return;
     const draft = new Map(board).set(cell, player);
+    const aiMove = minimax(draft, 9 - draft.size, "X");
+    draft.set(aiMove.move, player === "X" ? "O" : "X");
+
     setBoard(draft);
-    setPlayer((prevPlayer) => (prevPlayer === "X" ? "O" : "X"));
+    // setPlayer((prevPlayer) => (prevPlayer === "X" ? "O" : "X"));
     const winningComb = WINNER_COMB.find((comb) =>
       comb.every((cell) => draft.get(cell) === player)
     );
@@ -55,9 +67,9 @@ export default function Board() {
     setTimeout(() => setBoard(new Map()), 100);
     setPlayer("X");
   }
-
   return (
     <main className="bg-slate-900 h-full flex items-center">
+      {player}
       <section className="grid grid-cols-3 gap-4 bg-slate-900 p-2 rounded m-auto">
         <div className="flex items-center gap-0.5">
           <Logo className="font-extrabold text-lg" />
@@ -77,12 +89,12 @@ export default function Board() {
             <button
               key={i}
               onClick={() => handleClick(i)}
-              className={`bg-slate-800 w-20 h-20 rounded shadow-down shadow-slate-950 font-bold text-5xl pb-1 ${
-                currentCell === "X" ? "text-yellow-500" : "text-blue-500"
+              className={` w-20 h-20 rounded shadow-down shadow-slate-950 font-bold text-5xl pb-1 ${
+                currentCell === "X" ? "text-blue-500" : "text-yellow-500"
               } ${
                 result?.type === "winner" && result?.winningComb.includes(i)
-                  ? "bg-green-900"
-                  : ""
+                  ? "bg-green-900/90"
+                  : "bg-slate-800"
               }`}
             >
               {(currentCell || " ").toUpperCase()}
