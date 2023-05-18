@@ -10,7 +10,7 @@ export default function Home() {
           <Logo className="font-black" />
         </div>
         <section className="flex flex-col gap-4">
-          <div className="flex flex-col gap-3 text-center bg-slate-800 p-6 rounded shadow-down shadow-slate-950">
+          <div className="flex flex-col gap-4 text-center bg-slate-800 p-6 rounded shadow-down shadow-slate-950">
             <h2 className="text-sm text-slate-300/90 tracking-wider">
               PICK PLAYER 1'S MARK
             </h2>
