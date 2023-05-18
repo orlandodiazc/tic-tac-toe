@@ -22,7 +22,7 @@ export default function WinnerModal({
         <AlertDialog.Overlay className="fixed inset-0" />
         <AlertDialog.Content
           onEscapeKeyDown={(e) => e.preventDefault()}
-          className="tracking-wider opacity-95  fixed top-1/2 left-1/2 bg-slate-700 -translate-x-1/2  -translate-y-16 w-screen md:w-1/2 md:rounded-lg p-4  flex flex-col gap-3 text-center py-6"
+          className="tracking-wider opacity-95  fixed top-1/2 left-1/2 bg-slate-700 -translate-x-1/2  -translate-y-14 w-screen md:w-1/2 md:rounded-lg p-4  flex flex-col gap-3 text-center py-6"
         >
           <AlertDialog.Title className="text-slate-300/90">
             ROUND ENDED
