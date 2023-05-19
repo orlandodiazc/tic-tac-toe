@@ -3,19 +3,10 @@ import WinnerModal from "../components/WinnerModal";
 import Logo from "../components/Logo";
 import Button from "../components/Button";
 import { MdRefresh } from "react-icons/md";
-import minimax from "../utils/tic-tac-toe";
+import minimax, { isWinner } from "../utils/gameboard";
+import { useLocation } from "react-router-dom";
 
 const GRID = Array.from(Array(9).keys());
-const WINNER_COMB = [
-  [0, 1, 2],
-  [3, 4, 5],
-  [6, 7, 8],
-  [0, 3, 6],
-  [1, 4, 7],
-  [2, 5, 8],
-  [0, 4, 8],
-  [2, 4, 6],
-];
 
 type Player = "X" | "O";
 type Result =
@@ -25,30 +16,37 @@ type Result =
 type Stats = { ties: number; xWin: number; oWin: number };
 
 export default function Board() {
-  const [player, setPlayer] = useState<Player>("X");
+  const { state } = useLocation();
+  const { isVersusCPU, playerMark, cpuMark } = state;
   const [board, setBoard] = useState<Map<number, Player>>(() => new Map());
   const [result, setResult] = useState<Result>();
   const [stats, setStats] = useState<Stats>({ ties: 0, xWin: 0, oWin: 0 });
+  const [player, setPlayer] = useState<Player>(playerMark || "X");
 
   useEffect(() => {
-    const boardDraft = new Map(board).set(0, player);
-    setBoard(boardDraft);
-
-    const updatedPlayer = player === "X" ? "O" : "X";
-    setPlayer(updatedPlayer);
+    if (isVersusCPU && playerMark !== "X") {
+      const boardDraft = new Map(board).set(0, "X");
+      setBoard(boardDraft);
+    }
   }, []);
 
   function handleClick(cell: number) {
     if (board.has(cell)) return;
+    let winningComb = undefined;
+
     const draft = new Map(board).set(cell, player);
-    const aiMove = minimax(draft, 9 - draft.size, "X");
-    draft.set(aiMove.move, player === "X" ? "O" : "X");
+    winningComb = isWinner(draft, player);
+
+    if (isVersusCPU && !winningComb) {
+      const aiMove = minimax(draft, 9 - draft.size, cpuMark);
+      draft.set(aiMove.move, cpuMark);
+      winningComb = isWinner(draft, cpuMark);
+    } else {
+      setPlayer((prevPlayer) => (prevPlayer === "X" ? "O" : "X"));
+    }
 
     setBoard(draft);
-    // setPlayer((prevPlayer) => (prevPlayer === "X" ? "O" : "X"));
-    const winningComb = WINNER_COMB.find((comb) =>
-      comb.every((cell) => draft.get(cell) === player)
-    );
+
     if (winningComb) {
       setResult({ type: "winner", player, winningComb });
       if (player === "X") {

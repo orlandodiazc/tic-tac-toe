@@ -1,8 +1,10 @@
 import { Link } from "react-router-dom";
 import Logo from "../components/Logo";
 import * as ToggleGroup from "@radix-ui/react-toggle-group";
+import { useState } from "react";
 
 export default function Home() {
+  const [mark, setMark] = useState<"X" | "O">("X");
   return (
     <main className="bg-slate-900 h-full flex items-center">
       <div className="px-1 w-full max-w-md m-auto flex flex-col gap-1">
@@ -16,19 +18,19 @@ export default function Home() {
             </h2>
             <ToggleGroup.Root
               type="single"
-              defaultValue="x"
+              defaultValue="X"
               aria-label="Pick mark"
-              onValueChange={(value) => console.log(value)}
+              onValueChange={(value: "X" | "O") => setMark(value)}
               className="p-1 bg-slate-900 grid grid-flow-col gap-1 rounded font-extrabold h-12"
             >
               <ToggleGroup.Item
-                value="x"
+                value="X"
                 className="text-slate-300/90 data-[state=on]:text-slate-900 data-[state=on]:bg-slate-300/90 rounded"
               >
                 X
               </ToggleGroup.Item>
               <ToggleGroup.Item
-                value="o"
+                value="O"
                 className="text-slate-300/90 data-[state=on]:text-slate-900 data-[state=on]:bg-slate-300/90 rounded"
               >
                 O
@@ -39,12 +41,18 @@ export default function Home() {
           <div className="flex flex-col gap-4">
             <Link
               to="/play"
+              state={{
+                isVersusCPU: true,
+                playerMark: mark,
+                cpuMark: mark === "X" ? "O" : "X",
+              }}
               className="text-center p-2 rounded tracking-wide font-semibold shadow-down hover:opacity-90 bg-yellow-500/90 shadow-yellow-600 "
             >
               NEW GAME (VS CPU)
             </Link>
             <Link
               to="/play"
+              state={{ isVersusCPU: false }}
               className="text-center p-2 rounded tracking-wide font-semibold shadow-down hover:opacity-90 bg-blue-500/90 shadow-blue-600 "
             >
               NEW GAME (VS PLAYER)
