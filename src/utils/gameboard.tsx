@@ -47,7 +47,8 @@ export default function minimax(
   return best;
 }
 
-function isWinner(state: Map<number, "X" | "O">, player: "X" | "O") {
+export function isWinner(state: Map<number, "X" | "O">, player: "X" | "O") {
+  console.log(state, player);
   return WINNER_COMB.find((comb) =>
     comb.every((cell) => state.get(cell) === player)
   );
