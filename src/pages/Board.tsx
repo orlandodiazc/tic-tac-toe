@@ -8,7 +8,7 @@ import { useLocation } from "react-router-dom";
 
 const GRID = Array.from(Array(9).keys());
 
-type Player = "X" | "O";
+export type Player = "X" | "O";
 type Result =
   | { type: "tie" }
   | { type: "winner"; player: Player; winningComb: number[] };
@@ -17,17 +17,17 @@ type Stats = { ties: number; xWin: number; oWin: number };
 
 export default function Board() {
   const { state } = useLocation();
-  const { isVersusCPU, playerMark, cpuMark } = state;
+  const { isVersusCPU, playerMark, cpuMark } = state || { isVersusCPU: false };
   const [board, setBoard] = useState<Map<number, Player>>(() => new Map());
   const [result, setResult] = useState<Result>();
   const [stats, setStats] = useState<Stats>({ ties: 0, xWin: 0, oWin: 0 });
   const [player, setPlayer] = useState<Player>(playerMark || "X");
-
+  function setupCPU() {
+    if (isVersusCPU && cpuMark === "X")
+      setBoard(new Map().set(Math.floor(Math.random() * 9), "X"));
+  }
   useEffect(() => {
-    if (isVersusCPU && playerMark !== "X") {
-      const boardDraft = new Map(board).set(0, "X");
-      setBoard(boardDraft);
-    }
+    setupCPU();
   }, []);
 
   function handleClick(cell: number) {
@@ -62,8 +62,11 @@ export default function Board() {
 
   function clearBoard() {
     setResult(undefined);
-    setTimeout(() => setBoard(new Map()), 100);
-    setPlayer("X");
+    setTimeout(() => {
+      setBoard(new Map());
+      setupCPU();
+      setPlayer(playerMark || "X");
+    }, 100);
   }
   return (
     <main className="bg-slate-900 h-full flex items-center">
