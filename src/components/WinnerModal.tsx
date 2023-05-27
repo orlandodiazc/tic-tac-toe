@@ -27,7 +27,15 @@ export default function WinnerModal({
           <AlertDialog.Title className="text-slate-300/90">
             ROUND ENDED
           </AlertDialog.Title>
-          <AlertDialog.Description className="text-cyan-500  flex justify-center items-center gap-3">
+          <AlertDialog.Description
+            className={`flex justify-center items-center gap-3 ${
+              result === "X"
+                ? "text-cyan-500"
+                : result === "O"
+                ? "text-yellow-500"
+                : "text-slate-300/90"
+            }`}
+          >
             {result !== "tie" ? (
               <span className="text-5xl font-extrabold">
                 {result.toUpperCase()}
