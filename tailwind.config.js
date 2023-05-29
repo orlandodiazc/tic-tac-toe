@@ -10,7 +10,7 @@ export default {
         sans: ["Outfit", ...defaultTheme.fontFamily.sans],
       },
       boxShadow: {
-        down: "0 3px 0 0 rgba(0, 0, 0, 0.9)",
+        down: "0 3px 0 0 rgb(0 0 0 / 0.05)",
       },
     },
   },
