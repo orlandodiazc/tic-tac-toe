@@ -1,4 +1,3 @@
-import { useNavigate } from "react-router-dom";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -10,11 +9,14 @@ import {
 export default function ResetModal({
   isReset,
   setReset,
+  clearBoard,
+  clearStats,
 }: {
   isReset: boolean;
+  clearBoard: () => void;
   setReset: (value: boolean) => void;
+  clearStats: () => void;
 }): JSX.Element {
-  const navigate = useNavigate();
   return (
     <AlertDialog
       open={isReset}
@@ -35,7 +37,8 @@ export default function ResetModal({
           <AlertDialogCancel>NO, CANCEL</AlertDialogCancel>
           <AlertDialogAction
             onClick={() => {
-              navigate(0);
+              clearBoard();
+              clearStats();
             }}
           >
             YES, RESTART

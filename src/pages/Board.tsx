@@ -159,7 +159,16 @@ export default function Board(): JSX.Element {
           clearBoard={clearBoard}
         />
       )}
-      {isReset && <ResetModal isReset={isReset} setReset={setReset} />}
+      {isReset && (
+        <ResetModal
+          clearBoard={clearBoard}
+          isReset={isReset}
+          clearStats={() => {
+            setStats({ ties: 0, xWin: 0, oWin: 0 });
+          }}
+          setReset={setReset}
+        />
+      )}
     </main>
   );
 }

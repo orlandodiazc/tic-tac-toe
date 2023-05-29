@@ -57,7 +57,6 @@ export default function WinnerModal({
         <div className="flex gap-2 justify-center items-center">
           <AlertDialogCancel
             onClick={() => {
-              clearBoard();
               navigate("/");
             }}
           >
