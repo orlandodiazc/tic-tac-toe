@@ -8,12 +8,10 @@ import {
 } from "./ui/AlertDialog";
 
 export default function ResetModal({
-  clearBoard,
   isReset,
   setReset,
 }: {
   isReset: boolean;
-  clearBoard: () => void;
   setReset: (value: boolean) => void;
 }) {
   const navigate = useNavigate();
