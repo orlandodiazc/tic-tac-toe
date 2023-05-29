@@ -19,12 +19,13 @@ export default function minimax(
       ? { move: -1, score: -Infinity }
       : { move: -1, score: Infinity };
 
-  if (depth === 0 || isWinner(state, "X") || isWinner(state, "O")) {
-    const evaluationScore = isWinner(state, "X")
-      ? 1
-      : isWinner(state, "O")
-      ? -1
-      : 0;
+  if (
+    depth === 0 ||
+    isWinner(state, "X") != null ||
+    isWinner(state, "O") != null
+  ) {
+    const evaluationScore =
+      isWinner(state, "X") != null ? 1 : isWinner(state, "O") != null ? -1 : 0;
     return { move: -1, score: evaluationScore };
   }
 
@@ -47,7 +48,10 @@ export default function minimax(
   return best;
 }
 
-export function isWinner(state: Map<number, "X" | "O">, player: "X" | "O") {
+export function isWinner(
+  state: Map<number, "X" | "O">,
+  player: "X" | "O"
+): number[] | undefined {
   return WINNER_COMB.find((comb) =>
     comb.every((cell) => state.get(cell) === player)
   );

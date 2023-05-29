@@ -6,17 +6,29 @@ import { MdRefresh } from "react-icons/md";
 import minimax, { isWinner } from "../utils/gameboard";
 import { useLocation } from "react-router-dom";
 import ResetModal from "../components/ResetModal";
+import clsx from "clsx";
 
 const GRID = Array.from(Array(9).keys());
 
 export type Player = "X" | "O";
+
 type Result =
   | { type: "tie" }
   | { type: "winner"; player: Player; winningComb: number[] };
 
-type Stats = { ties: number; xWin: number; oWin: number };
+interface Stats {
+  ties: number;
+  xWin: number;
+  oWin: number;
+}
 
-export default function Board() {
+interface State {
+  isVersusCPU: boolean;
+  playerMark: Player;
+  cpuMark: Player;
+}
+
+export default function Board(): JSX.Element {
   const { state, pathname } = useLocation();
 
   const defaultState =
@@ -24,15 +36,15 @@ export default function Board() {
       ? { isVersusCPU: true, playerMark: "X", cpuMark: "O" }
       : { isVersusCPU: false };
 
-  const { isVersusCPU, playerMark, cpuMark } = state || defaultState;
+  const { isVersusCPU, playerMark, cpuMark }: State = state ?? defaultState;
 
   const [board, setBoard] = useState<Map<number, Player>>(() => new Map());
   const [result, setResult] = useState<Result>();
   const [stats, setStats] = useState<Stats>({ ties: 0, xWin: 0, oWin: 0 });
-  const [player, setPlayer] = useState<Player>(playerMark || "X");
+  const [player, setPlayer] = useState<Player>(playerMark ?? "X");
   const [isReset, setReset] = useState<boolean>(false);
 
-  function setupCPU() {
+  function setupCPU(): void {
     if (isVersusCPU && cpuMark === "X")
       setBoard(new Map().set(Math.floor(Math.random() * 9), "X"));
   }
@@ -41,15 +53,15 @@ export default function Board() {
     setupCPU();
   }, []);
 
-  function handleClick(cell: number) {
+  function handleClick(cell: number): void {
     if (board.has(cell)) return;
-    let winningComb = undefined;
+    let winningComb;
 
     const draft = new Map(board).set(cell, player);
     let draftPlayer = player;
     winningComb = isWinner(draft, player);
 
-    if (isVersusCPU && !winningComb && draft.size < 9) {
+    if (isVersusCPU && winningComb == null && draft.size < 9) {
       const aiMove = minimax(draft, 9 - draft.size, cpuMark);
       draft.set(aiMove.move, cpuMark);
       winningComb = isWinner(draft, cpuMark);
@@ -58,7 +70,7 @@ export default function Board() {
       setPlayer((prevPlayer) => (prevPlayer === "X" ? "O" : "X"));
     }
     setBoard(draft);
-    if (winningComb) {
+    if (winningComb != null) {
       setResult({ type: "winner", player: draftPlayer, winningComb });
       if (player === "X") {
         setStats({ ...stats, xWin: stats.xWin + 1 });
@@ -71,12 +83,12 @@ export default function Board() {
     }
   }
 
-  function clearBoard() {
+  function clearBoard(): void {
     setResult(undefined);
     setTimeout(() => {
       setBoard(new Map());
       setupCPU();
-      setPlayer(playerMark || "X");
+      setPlayer(playerMark ?? "X");
     }, 100);
   }
   return (
@@ -94,7 +106,7 @@ export default function Board() {
             onClick={() => {
               if (
                 board.size !== 0 ||
-                Object.values(stats).find((value) => value !== 0)
+                Object.values(stats).some((value) => value !== 0)
               ) {
                 setReset(true);
               }
@@ -106,19 +118,25 @@ export default function Board() {
         </div>
         {GRID.map((i) => {
           const currentCell = board.get(i);
+          const isCellWinnerComb =
+            result?.type === "winner" && result?.winningComb.includes(i);
           return (
             <button
               key={i}
-              onClick={() => handleClick(i)}
-              className={` w-20 h-20 rounded shadow-down shadow-slate-950 font-bold text-5xl pb-1 ${
-                currentCell === "X" ? "text-blue-500" : "text-yellow-500"
-              } ${
-                result?.type === "winner" && result?.winningComb.includes(i)
-                  ? "bg-green-900/90"
-                  : "bg-slate-800"
-              }`}
+              onClick={() => {
+                handleClick(i);
+              }}
+              className={clsx(
+                "w-20 h-20 rounded shadow-down  text-blue-500 shadow-slate-950 font-bold text-5xl pb-1",
+                {
+                  "text-blue-500": currentCell === "X",
+                  "text-yellow-500": currentCell === "O",
+                  "bg-slate-800": !isCellWinnerComb,
+                  "bg-green-900/90": isCellWinnerComb,
+                }
+              )}
             >
-              {(currentCell || " ").toUpperCase()}
+              {(currentCell ?? " ").toUpperCase()}
             </button>
           );
         })}
@@ -135,19 +153,13 @@ export default function Board() {
           <span className="font-bold text-sm">{stats.oWin}</span>
         </div>
       </section>
-      {result && (
+      {result != null && (
         <WinnerModal
           result={result.type === "tie" ? "tie" : result.player}
           clearBoard={clearBoard}
         />
       )}
-      {isReset && (
-        <ResetModal
-          isReset={isReset}
-          setReset={setReset}
-          clearBoard={clearBoard}
-        />
-      )}
+      {isReset && <ResetModal isReset={isReset} setReset={setReset} />}
     </main>
   );
 }

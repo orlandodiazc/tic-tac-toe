@@ -2,10 +2,10 @@ import { Link } from "react-router-dom";
 import Logo from "../components/Logo";
 import { useState } from "react";
 import ToggleMark from "../components/ToggleMark";
-import { Player } from "./Board";
+import { type Player } from "./Board";
 import Button from "../components/ui/Button";
 
-export default function Home() {
+export default function Home(): JSX.Element {
   const [mark, setMark] = useState<Player>("X");
   return (
     <main className="bg-slate-900 h-full flex items-center">
@@ -16,11 +16,13 @@ export default function Home() {
         <section className="flex flex-col gap-4">
           <div className="flex flex-col gap-4 text-center bg-slate-800 p-6 rounded shadow-down shadow-slate-950">
             <h2 className="text-sm text-slate-300/90 tracking-wider">
-              PICK PLAYER 1'S MARK
+              PICK PLAYER 1&apos;S MARK
             </h2>
             <ToggleMark
               mark={mark}
-              onOptionChange={(e) => setMark(e.target.value as Player)}
+              onOptionChange={(e) => {
+                setMark(e.target.value as Player);
+              }}
             />
             <p className="text-xs text-slate-300/60">REMEMBER: X GOES FIRST</p>
           </div>

@@ -7,20 +7,31 @@ import {
   AlertDialogDescription,
   AlertDialogTitle,
 } from "./ui/AlertDialog";
+import clsx from "clsx";
+
+type Result = "X" | "O" | "tie";
+
+const resultVariantClasses: Record<Result, string> = {
+  X: "text-cyan-500",
+  O: "text-yellow-500",
+  tie: "text-slate-300/90",
+};
 
 export default function WinnerModal({
   result,
   clearBoard,
 }: {
-  result: "X" | "O" | "tie";
+  result: Result;
   clearBoard: () => void;
-}) {
+}): JSX.Element {
   const navigate = useNavigate();
 
   return (
     <AlertDialog open={true}>
       <AlertDialogContent
-        onEscapeKeyDown={(e) => e.preventDefault()}
+        onEscapeKeyDown={(e) => {
+          e.preventDefault();
+        }}
         className="text-center tracking-wider"
       >
         <div>
@@ -28,13 +39,10 @@ export default function WinnerModal({
             ROUND ENDED
           </AlertDialogTitle>
           <AlertDialogDescription
-            className={`flex justify-center items-center gap-3 ${
-              result === "X"
-                ? "text-cyan-500"
-                : result === "O"
-                ? "text-yellow-500"
-                : "text-slate-300/90"
-            }`}
+            className={clsx(
+              "flex justify-center items-center gap-3",
+              resultVariantClasses[result]
+            )}
           >
             {result !== "tie" ? (
               <span className="text-5xl font-extrabold">

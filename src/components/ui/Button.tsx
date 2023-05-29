@@ -1,23 +1,32 @@
 import React from "react";
 import { Slot } from "@radix-ui/react-slot";
+import clsx from "clsx";
+
+type ButtonVariant = "yellow" | "blue" | "default";
 
 type ButtonProps = React.ButtonHTMLAttributes<HTMLButtonElement> & {
   asChild?: boolean;
-  variant?: "yellow" | "blue";
+  className?: string;
+  variant?: ButtonVariant;
+};
+
+const buttonVariantClasses: Record<ButtonVariant, string> = {
+  default: "bg-slate-400/90 shadow-slate-500",
+  yellow: "bg-yellow-500/90 shadow-yellow-600",
+  blue: "bg-blue-500/90 shadow-blue-600",
 };
 
 const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
-  ({ className, variant, asChild = false, ...props }, ref) => {
+  ({ className, variant = "default", asChild = false, ...props }, ref) => {
     const Comp = asChild ? Slot : "button";
-    const variantClasses =
-      variant === "yellow"
-        ? "bg-yellow-500/90 shadow-yellow-600"
-        : variant === "blue"
-        ? "bg-blue-500/90 shadow-blue-600"
-        : "bg-slate-400/90 shadow-slate-500";
+
     return (
       <Comp
-        className={`inline-flex justify-center items-center h-9 px-2 rounded tracking-wide font-semibold shadow-down hover:opacity-90  ${variantClasses} ${className}`}
+        className={clsx(
+          "inline-flex justify-center items-center h-9 px-2 rounded tracking-wide font-semibold shadow-down hover:opacity-90",
+          buttonVariantClasses[variant],
+          className
+        )}
         ref={ref}
         {...props}
       />

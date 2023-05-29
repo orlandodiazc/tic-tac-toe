@@ -1,4 +1,4 @@
-import { ChangeEvent } from "react";
+import { type ChangeEvent } from "react";
 
 export default function ToggleMark({
   onOptionChange,
@@ -6,7 +6,7 @@ export default function ToggleMark({
 }: {
   onOptionChange: (e: ChangeEvent<HTMLInputElement>) => void;
   mark: "O" | "X";
-}) {
+}): JSX.Element {
   return (
     <>
       <ul className="grid gap-2 grid-cols-2 bg-slate-900 p-1 rounded font-extrabold">

@@ -13,12 +13,19 @@ export default function ResetModal({
 }: {
   isReset: boolean;
   setReset: (value: boolean) => void;
-}) {
+}): JSX.Element {
   const navigate = useNavigate();
   return (
-    <AlertDialog open={isReset} onOpenChange={(value) => setReset(value)}>
+    <AlertDialog
+      open={isReset}
+      onOpenChange={(value) => {
+        setReset(value);
+      }}
+    >
       <AlertDialogContent
-        onEscapeKeyDown={(e) => e.preventDefault()}
+        onEscapeKeyDown={(e) => {
+          e.preventDefault();
+        }}
         className="text-center tracking-wider"
       >
         <AlertDialogDescription className="text-slate-300/90 text-xl">
