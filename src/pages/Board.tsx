@@ -1,10 +1,11 @@
 import { useEffect, useState } from "react";
 import WinnerModal from "../components/WinnerModal";
 import Logo from "../components/Logo";
-import Button from "../components/Button";
+import Button from "../components/ui/Button";
 import { MdRefresh } from "react-icons/md";
 import minimax, { isWinner } from "../utils/gameboard";
 import { useLocation } from "react-router-dom";
+import ResetModal from "../components/ResetModal";
 
 const GRID = Array.from(Array(9).keys());
 
@@ -16,16 +17,26 @@ type Result =
 type Stats = { ties: number; xWin: number; oWin: number };
 
 export default function Board() {
-  const { state } = useLocation();
-  const { isVersusCPU, playerMark, cpuMark } = state || { isVersusCPU: false };
+  const { state, pathname } = useLocation();
+
+  const defaultState =
+    pathname === "/play/cpu"
+      ? { isVersusCPU: true, playerMark: "X", cpuMark: "O" }
+      : { isVersusCPU: false };
+
+  const { isVersusCPU, playerMark, cpuMark } = state || defaultState;
+
   const [board, setBoard] = useState<Map<number, Player>>(() => new Map());
   const [result, setResult] = useState<Result>();
   const [stats, setStats] = useState<Stats>({ ties: 0, xWin: 0, oWin: 0 });
   const [player, setPlayer] = useState<Player>(playerMark || "X");
+  const [isReset, setReset] = useState<boolean>(false);
+
   function setupCPU() {
     if (isVersusCPU && cpuMark === "X")
       setBoard(new Map().set(Math.floor(Math.random() * 9), "X"));
   }
+
   useEffect(() => {
     setupCPU();
   }, []);
@@ -35,20 +46,20 @@ export default function Board() {
     let winningComb = undefined;
 
     const draft = new Map(board).set(cell, player);
+    let draftPlayer = player;
     winningComb = isWinner(draft, player);
 
-    if (isVersusCPU && !winningComb) {
+    if (isVersusCPU && !winningComb && draft.size < 9) {
       const aiMove = minimax(draft, 9 - draft.size, cpuMark);
       draft.set(aiMove.move, cpuMark);
       winningComb = isWinner(draft, cpuMark);
+      draftPlayer = cpuMark;
     } else {
       setPlayer((prevPlayer) => (prevPlayer === "X" ? "O" : "X"));
     }
-
     setBoard(draft);
-
     if (winningComb) {
-      setResult({ type: "winner", player, winningComb });
+      setResult({ type: "winner", player: draftPlayer, winningComb });
       if (player === "X") {
         setStats({ ...stats, xWin: stats.xWin + 1 });
       } else {
@@ -70,7 +81,6 @@ export default function Board() {
   }
   return (
     <main className="bg-slate-900 h-full flex items-center">
-      {player}
       <section className="grid grid-cols-3 gap-4 bg-slate-900 p-2 rounded m-auto">
         <div className="flex items-center gap-0.5">
           <Logo className="font-extrabold text-lg" />
@@ -80,7 +90,17 @@ export default function Board() {
           TURN
         </div>
         <div className="flex justify-end">
-          <Button onClick={clearBoard} className="h-7 text-slate-900">
+          <Button
+            onClick={() => {
+              if (
+                board.size !== 0 ||
+                Object.values(stats).find((value) => value !== 0)
+              ) {
+                setReset(true);
+              }
+            }}
+            className="h-7 text-slate-900"
+          >
             <MdRefresh size={20} />
           </Button>
         </div>
@@ -118,6 +138,13 @@ export default function Board() {
       {result && (
         <WinnerModal
           result={result.type === "tie" ? "tie" : result.player}
+          clearBoard={clearBoard}
+        />
+      )}
+      {isReset && (
+        <ResetModal
+          isReset={isReset}
+          setReset={setReset}
           clearBoard={clearBoard}
         />
       )}
