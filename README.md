@@ -43,6 +43,10 @@ This project was created using:
 
 <!-- Features -->
 
+### Desktop
+
+![Desktop screenshot](https://raw.githubusercontent.com/orlandodiazc/tic-tac-toe_ts/main/app-screenshot.png)
+
 ## Getting Started <a name="getting-started"></a>
 
 To get a local copy up and running, follow these steps.
