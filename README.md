@@ -45,7 +45,7 @@ This project was created using:
 
 ### Desktop
 
-![Desktop screenshot](https://raw.githubusercontent.com/orlandodiazc/tic-tac-toe_ts/main/app-screenshot.png)
+![Desktop screenshot](https://raw.githubusercontent.com/orlandodiazc/tic-tac-toe_ts/main/public/opengraph-image.png)
 
 ## Getting Started <a name="getting-started"></a>
 
