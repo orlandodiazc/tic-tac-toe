@@ -27,7 +27,7 @@ After you're finished please remove all the comments and instructions!
 
 **Tic Tac Toe** is a SPA built with ReactJS and Typescript, with this app you can play Tic Tac Toe games Vs a CPU or another player.
 
-[Live Site](https://tic-tac-toe-orlando.odiaz.com.co/)
+[Live Site](https://tic-tac-toe.odiaz.com.co/)
 
 ## Built With <a name="built-with"></a>
 
